@@ -28,7 +28,7 @@
 #pragma once
 
 #include <vector>
-#include "nvEncodeAPI.h"
+#include <Interface/nvEncodeAPI.h>
 #include <stdint.h>
 #include <mutex>
 #include <string>
