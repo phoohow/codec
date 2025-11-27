@@ -26,6 +26,8 @@ target("codec", function()
     add_files("src/NvDecoder/*.cpp")
     
     add_files("src/Utils/*.cu")
+
+    add_cxxflags("/FS")
     
     -- CUDA configurations
     add_cuflags("-arch=sm_120")-- Adjust this based on your GPU architecture

@@ -3,7 +3,7 @@
 #include <memory>
 
 #ifdef _WIN32
-#include <d3d12.h>
+#    include <d3d12.h>
 #endif
 
 int main()
@@ -12,21 +12,21 @@ int main()
 
     // Example 1: Creating a DX12 encoder
     {
-        cdc::CreateParams encoderParams = {};
-        encoderParams.width = 1920;
-        encoderParams.height = 1080;
-        encoderParams.deviceType = cdc::DEVICE_TYPE_DX12;
-        encoderParams.codecType = cdc::CODEC_TYPE_H264;
+        cdc::CreateParams params = {};
+        params.width             = 1920;
+        params.height            = 1080;
+        params.deviceType        = cdc::DEVICE_TYPE_DX12;
+        params.codecType         = cdc::CODEC_TYPE_H264;
         // In a real application, you would set the device pointer here
-        encoderParams.device = nullptr;          // Placeholder
-        encoderParams.specifics.dx12.format = 0; // Placeholder for DXGI_FORMAT
+        params.device      = nullptr;                 // Placeholder
+        params.pixelFormat = cdc::PIXEL_FORMAT_BGRA8; // Placeholder for DXGI_FORMAT
 
-        auto encoder = cdc::CreateEncoder(encoderParams);
+        auto encoder = cdc::CreateEncoder(params);
         if (encoder)
         {
             std::cout << "Successfully created DX12 H.264 encoder" << std::endl;
 
-            if (encoder->Initialize(encoderParams))
+            if (encoder->Initialize(params))
             {
                 std::cout << "Successfully initialized DX12 encoder" << std::endl;
             }
@@ -43,21 +43,21 @@ int main()
 
     // Example 2: Creating a DX12 decoder
     {
-        cdc::CreateParams decoderParams = {};
-        decoderParams.width = 1920;
-        decoderParams.height = 1080;
-        decoderParams.deviceType = cdc::DEVICE_TYPE_DX12;
-        decoderParams.codecType = cdc::CODEC_TYPE_H264;
+        cdc::CreateParams params = {};
+        params.width             = 1920;
+        params.height            = 1080;
+        params.deviceType        = cdc::DEVICE_TYPE_DX12;
+        params.codecType         = cdc::CODEC_TYPE_H264;
         // In a real application, you would set the device pointer here
-        decoderParams.device = nullptr;          // Placeholder
-        decoderParams.specifics.dx12.format = 0; // Placeholder for DXGI_FORMAT
+        params.device      = nullptr;                 // Placeholder
+        params.pixelFormat = cdc::PIXEL_FORMAT_BGRA8; // Placeholder for DXGI_FORMAT
 
-        auto decoder = cdc::CreateDecoder(decoderParams);
+        auto decoder = cdc::CreateDecoder(params);
         if (decoder)
         {
             std::cout << "Successfully created DX12 H.264 decoder" << std::endl;
 
-            if (decoder->Initialize(decoderParams))
+            if (decoder->Initialize(params))
             {
                 std::cout << "Successfully initialized DX12 decoder" << std::endl;
             }
