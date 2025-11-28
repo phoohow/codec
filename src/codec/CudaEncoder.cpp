@@ -14,7 +14,7 @@
 namespace cdc
 {
 
-CudaEncoder::CudaEncoder() : m_pEncoder(nullptr), m_initialized(false) {}
+CudaEncoder::CudaEncoder() : m_encoder(nullptr), m_initialized(false) {}
 
 CudaEncoder::~CudaEncoder()
 {
@@ -33,17 +33,17 @@ bool CudaEncoder::Initialize(const CreateParams& params)
     try
     {
         CUcontext cuContext = reinterpret_cast<CUcontext>(params.device);
-        m_pEncoder          = new NvEncoderCuda(cuContext, params.width, params.height, to_nvEncFormat(params.pixelFormat));
+        m_encoder           = new NvEncoderCuda(cuContext, params.width, params.height, to_nvEncFormat(params.pixelFormat));
 
         // Setup encoding parameters
         NV_ENC_INITIALIZE_PARAMS initializeParams = {NV_ENC_INITIALIZE_PARAMS_VER};
         NV_ENC_CONFIG            encodeConfig     = {NV_ENC_CONFIG_VER};
 
         initializeParams.encodeConfig = &encodeConfig;
-        m_pEncoder->CreateDefaultEncoderParams(&initializeParams, NV_ENC_CODEC_H264_GUID, NV_ENC_PRESET_P4_GUID);
+        m_encoder->CreateDefaultEncoderParams(&initializeParams, NV_ENC_CODEC_H264_GUID, NV_ENC_PRESET_P4_GUID);
 
         // Initialize encoder
-        m_pEncoder->CreateEncoder(&initializeParams);
+        m_encoder->CreateEncoder(&initializeParams);
         m_initialized = true;
         return true;
     }
@@ -56,7 +56,7 @@ bool CudaEncoder::Initialize(const CreateParams& params)
 
 bool CudaEncoder::EncodeFrame(void* pData, CodecPacket& packet)
 {
-    if (!m_initialized || !m_pEncoder)
+    if (!m_initialized || !m_encoder)
     {
         return false;
     }
@@ -67,7 +67,7 @@ bool CudaEncoder::EncodeFrame(void* pData, CodecPacket& packet)
 
         // Use the correct NvEncoder function signature
         std::vector<NvEncOutputFrame> vPacket;
-        m_pEncoder->EncodeFrame(vPacket, nullptr);
+        m_encoder->EncodeFrame(vPacket, nullptr);
 
         // Convert to our format
         if (!vPacket.empty())
@@ -92,7 +92,7 @@ bool CudaEncoder::EncodeFrame(void* pData, CodecPacket& packet)
 
 bool CudaEncoder::Flush(CodecPacket& packet)
 {
-    if (!m_initialized || !m_pEncoder)
+    if (!m_initialized || !m_encoder)
     {
         return false;
     }
@@ -101,7 +101,7 @@ bool CudaEncoder::Flush(CodecPacket& packet)
     {
         // Use the correct NvEncoder function signature
         std::vector<NvEncOutputFrame> vPacket;
-        m_pEncoder->EndEncode(vPacket);
+        m_encoder->EndEncode(vPacket);
 
         // Convert to our format
         if (!vPacket.empty())
@@ -126,11 +126,11 @@ bool CudaEncoder::Flush(CodecPacket& packet)
 
 void CudaEncoder::Destroy()
 {
-    if (m_pEncoder)
+    if (m_encoder)
     {
-        m_pEncoder->DestroyEncoder();
-        delete m_pEncoder;
-        m_pEncoder = nullptr;
+        m_encoder->DestroyEncoder();
+        delete m_encoder;
+        m_encoder = nullptr;
     }
     m_initialized = false;
 }

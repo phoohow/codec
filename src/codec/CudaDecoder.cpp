@@ -11,7 +11,7 @@
 namespace cdc
 {
 
-CudaDecoder::CudaDecoder() : m_pDecoder(nullptr), m_initialized(false) {}
+CudaDecoder::CudaDecoder() : m_decoder(nullptr), m_initialized(false) {}
 
 CudaDecoder::~CudaDecoder()
 {
@@ -46,7 +46,7 @@ bool CudaDecoder::Initialize(const CreateParams& params)
         }
 
         // Initialize NvDecoder with proper parameters including max width and height
-        m_pDecoder    = new NvDecoder(cuContext, false, codec, false, false, nullptr, nullptr, false, params.width, params.height);
+        m_decoder     = new NvDecoder(cuContext, false, codec, false, false, nullptr, nullptr, false, params.width, params.height);
         m_initialized = true;
         return true;
     }
@@ -59,7 +59,7 @@ bool CudaDecoder::Initialize(const CreateParams& params)
 
 bool CudaDecoder::DecodePacket(const CodecPacket& packet, FrameData& frame)
 {
-    if (!m_initialized || !m_pDecoder)
+    if (!m_initialized || !m_decoder)
     {
         return false;
     }
@@ -71,17 +71,17 @@ bool CudaDecoder::DecodePacket(const CodecPacket& packet, FrameData& frame)
         int            nSize = static_cast<int>(packet.size);
 
         // Decode the data
-        int nFrameReturned = m_pDecoder->Decode(pData, nSize, 0, packet.timestamp);
+        int nFrameReturned = m_decoder->Decode(pData, nSize, 0, packet.timestamp);
 
         if (nFrameReturned > 0)
         {
             // Get the decoded frame
             int64_t  timestamp;
-            uint8_t* pFrame = m_pDecoder->GetFrame(&timestamp);
+            uint8_t* pFrame = m_decoder->GetFrame(&timestamp);
             if (pFrame != nullptr)
             {
                 // Copy decoded frame data
-                size_t frameSize = m_pDecoder->GetFrameSize();
+                size_t frameSize = m_decoder->GetFrameSize();
                 frame.data       = new uint8_t[frameSize];
                 memcpy(frame.data, pFrame, frameSize);
                 frame.size      = static_cast<uint32_t>(frameSize);
@@ -103,16 +103,16 @@ bool CudaDecoder::Flush(FrameData& frame)
     // Flush remaining frames from decoder
     try
     {
-        int nFrameReturned = m_pDecoder->Decode(nullptr, 0, 0, 0);
+        int nFrameReturned = m_decoder->Decode(nullptr, 0, 0, 0);
 
         if (nFrameReturned > 0)
         {
             // Get the decoded frame
             int64_t  timestamp;
-            uint8_t* pFrame = m_pDecoder->GetFrame(&timestamp);
+            uint8_t* pFrame = m_decoder->GetFrame(&timestamp);
             if (pFrame != nullptr)
             {
-                size_t frameSize = m_pDecoder->GetFrameSize();
+                size_t frameSize = m_decoder->GetFrameSize();
                 frame.data       = new uint8_t[frameSize];
                 memcpy(frame.data, pFrame, frameSize);
                 frame.size      = static_cast<uint32_t>(frameSize);
@@ -131,10 +131,10 @@ bool CudaDecoder::Flush(FrameData& frame)
 
 void CudaDecoder::Destroy()
 {
-    if (m_pDecoder)
+    if (m_decoder)
     {
-        delete m_pDecoder;
-        m_pDecoder = nullptr;
+        delete m_decoder;
+        m_decoder = nullptr;
     }
     m_initialized = false;
 }

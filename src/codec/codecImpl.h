@@ -11,7 +11,7 @@ namespace cdc
 
 class CudaEncoder : public Encoder
 {
-    NvEncoderCuda* m_pEncoder;
+    NvEncoderCuda* m_encoder;
     CreateParams   m_params;
     bool           m_initialized;
 
@@ -27,7 +27,7 @@ public:
 
 class DX12Encoder : public Encoder
 {
-    NvEncoderD3D12* m_pEncoder;
+    NvEncoderD3D12* m_encoder;
     CreateParams    m_params;
     bool            m_initialized;
 
@@ -43,7 +43,7 @@ public:
 
 class CudaDecoder : public Decoder
 {
-    NvDecoder*   m_pDecoder;
+    NvDecoder*   m_decoder;
     CreateParams m_params;
     bool         m_initialized;
 

@@ -119,7 +119,7 @@ void NvEncoderD3D12::AllocateInputBuffers(int32_t numInputBuffers)
     {
         NV_ENC_INPUT_RESOURCE_D3D12* pInpRsrc = new NV_ENC_INPUT_RESOURCE_D3D12();
         memset(pInpRsrc, 0, sizeof(NV_ENC_INPUT_RESOURCE_D3D12));
-        pInpRsrc->inputFencePoint.pFence = m_pInputFence.Get();
+        pInpRsrc->inputFencePoint.pFence = GetInpFence();
 
         m_vInputRsrc.push_back(pInpRsrc);
     }
@@ -151,7 +151,7 @@ void NvEncoderD3D12::RegisterInputResources(int width, int height, NV_ENC_BUFFER
 
         // Set input fence point
         memset(&regRsrcInputFence, 0, sizeof(NV_ENC_FENCE_POINT_D3D12));
-        regRsrcInputFence.pFence = m_pInputFence.Get();
+        regRsrcInputFence.pFence = GetInpFence();
         regRsrcInputFence.waitValue = m_nInputFenceVal;
         regRsrcInputFence.bWait = true;
 
