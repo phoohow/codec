@@ -1,7 +1,6 @@
 #pragma once
 
 #include <stdint.h>
-#include <memory>
 
 namespace cdc
 {
@@ -101,7 +100,7 @@ public:
 };
 
 // Factory functions
-std::unique_ptr<Encoder> CreateEncoder(const CreateParams& params);
-std::unique_ptr<Decoder> CreateDecoder(const CreateParams& params);
+Encoder* CreateEncoder(const CreateParams& params);
+Decoder* CreateDecoder(const CreateParams& params);
 
 } // namespace cdc
