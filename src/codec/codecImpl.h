@@ -6,6 +6,8 @@ class NvEncoderCuda;
 class NvEncoderD3D12;
 class NvDecoder;
 
+struct ID3D12Resource;
+
 namespace cdc
 {
 
@@ -39,6 +41,9 @@ public:
     bool EncodeFrame(void* pData, CodecPacket& packet) override;
     bool Flush(CodecPacket& packet) override;
     void Destroy() override;
+
+private:
+    bool CopyTextureToEncoder(ID3D12Resource* src_tex, ID3D12Resource* dst_tex);
 };
 
 class CudaDecoder : public Decoder
